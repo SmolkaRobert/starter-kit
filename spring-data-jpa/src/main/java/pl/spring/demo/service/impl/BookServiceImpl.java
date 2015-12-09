@@ -40,4 +40,17 @@ public class BookServiceImpl implements BookService {
         entity = bookRepository.save(entity);
         return BookMapper.map(entity);
     }
+
+	@Override
+	public BookTo getBookByID(long id) {
+		return BookMapper.map(bookRepository.getOne(id));
+	}
+
+	@Override
+    @Transactional(readOnly = false)
+	public BookTo deleteBookByID(long id) {
+		BookEntity bookToDelete = BookMapper.map(getBookByID(id));
+		bookRepository.delete(bookToDelete);
+		return BookMapper.map(bookToDelete);
+	}
 }

@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
 <head lang="en">
-    <meta charset="UTF-8"/>
-    <title>Lista książek</title>
+<meta charset="UTF-8" />
+<title>Book list</title>
+<link rel="stylesheet" th:href="@{/static/application.css}"
+	href="/static/application.css" />
 </head>
 <body>
-    <div th:each="book : ${books}">
-        <p th:text="${book.title}">title</p>
-    </div>
+	<table class="gridtable" style="width: 100%">
+		<tr>
+			<th>ID</th>
+			<th>Title</th>
+			<th>Author</th>
+			<th>Delete book</th>
+		</tr>
+		<tr th:each="book : ${books}">
+			<td th:text="${book.id}">id</td>
+			<td th:text="${book.title}">title</td>
+			<td th:text="${book.authors}">authors</td>
+			<td><form th:action="@{/deleteBook(id=${book.id})}" method="post"
+				title="Delete chosen book"><button>Delete</button></form></td>
+		</tr>
+	</table>
 </body>
 </html>

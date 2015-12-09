@@ -78,7 +78,7 @@ public class BookRestServiceTest {
         File file = FileUtils.getFileFromClasspath("classpath:pl/spring/demo/web/json/bookToSave.json");
         String json = FileUtils.readFileToString(file);
         // when
-        ResultActions response = this.mockMvc.perform(post("/book")
+        ResultActions response = this.mockMvc.perform(post("/bookPost")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.getBytes()));
