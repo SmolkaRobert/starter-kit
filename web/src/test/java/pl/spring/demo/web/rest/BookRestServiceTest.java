@@ -23,6 +23,7 @@ import java.util.Arrays;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -78,11 +79,57 @@ public class BookRestServiceTest {
         File file = FileUtils.getFileFromClasspath("classpath:pl/spring/demo/web/json/bookToSave.json");
         String json = FileUtils.readFileToString(file);
         // when
-        ResultActions response = this.mockMvc.perform(post("/bookPost")
+        ResultActions response = this.mockMvc.perform(post("/book")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.getBytes()));
         // then
         response.andExpect(status().isOk());
+    }
+    
+    @Test
+    public void testShouldDeleteBook() throws Exception {
+    	// given
+    	final BookTo bookTo = new BookTo(2L, "Druga książka", "Zbigniew Nowak");
+        String json = bookTo.mapBookTo2Json();
+        
+        Mockito.when(bookService.deleteBookByID(bookTo.getId())).thenReturn(bookTo);
+    	
+    	// when
+        ResultActions response = this.mockMvc.perform(delete("/book")
+    			.accept(MediaType.APPLICATION_JSON)
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(json.getBytes()));
+    	// then
+    	Mockito.verify(bookService).deleteBookByID(bookTo.getId());
+    	
+    	response.andExpect(status().isOk())
+    	
+    	.andExpect(jsonPath("$.id").value(bookTo.getId().intValue()))
+    	.andExpect(jsonPath("$.title").value(bookTo.getTitle()))
+    	.andExpect(jsonPath("$.authors").value(bookTo.getAuthors()));
+    }
+    
+    @Test
+    public void testShouldPostBook() throws Exception {
+    	// given
+    	final BookTo bookTo = new BookTo(2L, "Druga książka", "Zbigniew Nowak");
+        String json = bookTo.mapBookTo2Json();
+
+        Mockito.when(bookService.saveBook(bookTo)).thenReturn(bookTo);
+    	
+    	// when
+    	ResultActions response = this.mockMvc.perform(post("/book")
+    			.accept(MediaType.APPLICATION_JSON)
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(json.getBytes()));
+    	// then
+    	Mockito.verify(bookService).saveBook(bookTo);
+    	
+    	response.andExpect(status().isOk())
+    	
+    	.andExpect(jsonPath("$.id").value(bookTo.getId().intValue()))
+    	.andExpect(jsonPath("$.title").value(bookTo.getTitle()))
+    	.andExpect(jsonPath("$.authors").value(bookTo.getAuthors()));
     }
 }

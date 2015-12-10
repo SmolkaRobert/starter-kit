@@ -24,8 +24,6 @@ public class BookController {
         return "bookList";
     }
     
-    
-    //TODO RSmolka try to implement deleteBook with POST method
     @RequestMapping(value = "/deleteBook", method = RequestMethod.POST)
     public String deleteBook(@RequestParam("id") long id, Map<String, Object> params) {
     	BookTo bookToBeDeleted = bookService.getBookByID(id);
